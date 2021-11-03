@@ -1,0 +1,60 @@
+from NewsPortal.models import *
+u1 = User.objects.create_user('Иванов')
+u2 = User.objects.create_user('Петров')
+a1 = Author.objects.create(user=u1)
+a2 = Author.objects.create(user=u2)
+cat1 = Category.objects.create(name='Политика')
+cat2 = Category.objects.create(name='Музыка')
+cat3 = Category.objects.create(name='Образование')
+cat4 = Category.objects.create(name='Юмор')
+ar1 = Post.objects.create(header='Cинтетическое тестирование',text='''Таким образом, синтетическое тестирование
+ обеспечивает широкому кругу (специалистов) участие в формировании направлений прогрессивного развития. Противополо
+жная точка зрения подразумевает, что диаграммы связей, которые представляют собой яркий пример континентально-европ
+ейского типа политической культуры, будут превращены в посмешище, хотя само их существование приносит несомненную п
+ользу обществу. Сложно сказать, почему явные признаки победы институционализации объявлены нарушающими общечеловече
+ские нормы этики и морали.''', type=article, author=a1)
+ar2 = Post.objects.create(header='Национальный проект',text='''Для современного мира курс на социально-ориентир
+ованный национальный проект в значительной степени обусловливает важность новых принципов формирования материально-
+технической и кадровой базы. Приятно, граждане, наблюдать, как ключевые особенности структуры проекта призывают нас
+ к новым свершениям, которые, в свою очередь, должны быть представлены в исключительно положительном свете. Разнооб
+разный и богатый опыт говорит нам, что семантический разбор внешних противодействий создаёт предпосылки для системы
+ массового участия.''', type=article, author=a2)
+ar3 = Post.objects.create(header='Горизонты модели развития',text='''Принимая во внимание показатели успешности
+, глубокий уровень погружения, а также свежий взгляд на привычные вещи - безусловно открывает новые горизонты для м
+одели развития. А также реплицированные с зарубежных источников, современные исследования формируют глобальную экон
+омическую сеть и при этом - обнародованы. Как принято считать, действия представителей оппозиции, которые представл
+яют собой яркий пример континентально-европейского типа политической культуры, будут ассоциативно распределены по о
+траслям!''', type=news, author=a1)
+PostCategory.objects.create(post=ar1, category=cat1)
+PostCategory.objects.create(post=ar1, category=cat2)
+PostCategory.objects.create(post=ar2, category=cat2)
+PostCategory.objects.create(post=ar2, category=cat3)
+PostCategory.objects.create(post=ar2, category=cat4)
+PostCategory.objects.create(post=ar3, category=cat1)
+PostCategory.objects.create(post=ar3, category=cat3)
+c1 = Comment.objects.create(text='Перспективное планирование в значительной степени обусловливает важность прогресса профессионального сообщества.', post=ar1, user=u1)
+c2 = Comment.objects.create(text='Не следует, однако, забывать, что сложившаяся структура организации напрямую зависит от системы обучения кадров, соответствующей насущным потребностям.', post=ar1, user=u2)
+c3 = Comment.objects.create(text='Банальные, но неопровержимые выводы, а также элементы политического процесса формируют глобальную экономическую сеть и при этом - представлены в исключительно положительном свете.', post=ar2, user=u1)
+c4 = Comment.objects.create(text='Принимая во внимание показатели успешности, базовый вектор развития требует от нас анализа стандартных подходов.', post=ar3, user=u1)
+c5 = Comment.objects.create(text='Каждый из нас понимает очевидную вещь: выбранный нами инновационный путь предоставляет широкие возможности для распределения внутренних резервов и ресурсов.', post=ar3, user=u2)
+ar1.like()
+ar1.like()
+ar1.like()
+ar2.dislike()
+ar2.dislike()
+ar3.like()
+c1.like()
+c1.like()
+c2.dislike()
+c3.like()
+c4.like()
+c4.like()
+c5.dislike()
+c5.dislike()
+a1.update_rating()
+a2.update_rating()
+top_a = Author.objects.all().order_by('-rating').first()
+print(top_a.user.username, top_a.rating)
+top_p = Post.objects.all().order_by('-rating').first()
+print(top_p.date, top_p.author.user.username, top_p.rating, top_p.header, top_p.preview())
+Comment.objects.filter(post=top_p).values("date", "user__username", "rating", "text")
